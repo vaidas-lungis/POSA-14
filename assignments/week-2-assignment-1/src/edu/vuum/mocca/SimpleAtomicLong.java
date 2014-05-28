@@ -4,6 +4,7 @@ package edu.vuum.mocca;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 
 /**
  * @class SimpleAtomicLong
