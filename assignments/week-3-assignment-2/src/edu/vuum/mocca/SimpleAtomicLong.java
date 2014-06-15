@@ -25,11 +25,7 @@ class SimpleAtomicLong
     // TODO -- you fill in here by replacing the null with an
     // initialization of ReentrantReadWriteLock.
     private ReentrantReadWriteLock mRWLock = new ReentrantReadWriteLock();
-
-    // TODO -- you fill in here by replacing the null with an
-    // initialization of ReentrantReadWriteLock.
-    private ReentrantReadWriteLock mRWLock = new ReentrantReadWriteLock();
-
+    
     /**
      * Creates a new SimpleAtomicLong with the given initial value.
      */
