@@ -18,8 +18,8 @@ import android.widget.TextView;
 /**
  * @class UniqueIDGeneratorActivity
  *
- * @brief A class that allows a user to generate a system-wide Unique
- *        ID.
+ * @brief A class that interacts with a user to invoke a Bound Service
+ *        that generates a system-wide Unique ID.
  */
 public class UniqueIDGeneratorActivity extends Activity {
     /**
@@ -33,10 +33,18 @@ public class UniqueIDGeneratorActivity extends Activity {
     private TextView mOutput;
 
     /**
-     * Reference to the Messenger that's implemented in the
+     * Reference to the request Messenger that's implemented in the
      * UniqueIDGeneratorService.
      */
     private Messenger mReqMessengerRef = null;
+
+    /**
+     * Reference to the ReplyMessenger that's passed to the
+     * UniqueIDGeneratorService and used to process replies from the
+     * Service.
+     */
+    private Messenger mReplyMessenger =
+        new Messenger(new ReplyHandler());
 
     /**
      * @class ReplyHandler
@@ -50,7 +58,8 @@ public class UniqueIDGeneratorActivity extends Activity {
          */
         public void handleMessage(Message reply) {
             // Get the unique ID encapsulated in reply Message.
-            String uniqueID = UniqueIDGeneratorService.uniqueID(reply);
+            String uniqueID =
+                UniqueIDGeneratorService.uniqueID(reply);
 
             Log.d(TAG, "received unique ID " + uniqueID);
 
@@ -60,7 +69,7 @@ public class UniqueIDGeneratorActivity extends Activity {
     }
 
     /** 
-     * This ServiceConnection is used to receive a Messenger proxy
+     * This ServiceConnection is used to receive a Messenger reference
      * after binding to the UniqueIDGeneratorService using bindService().
      */
     private ServiceConnection mSvcConn = new ServiceConnection() {
@@ -81,7 +90,7 @@ public class UniqueIDGeneratorActivity extends Activity {
             /**
              * Called if the Service crashes and is no longer
              * available.  The ServiceConnection will remain bound,
-             * but the service will not respond to any requests.
+             * but the Service will not respond to any requests.
              */
             public void onServiceDisconnected(ComponentName className) {
                 mReqMessengerRef = null;
@@ -112,7 +121,7 @@ public class UniqueIDGeneratorActivity extends Activity {
         // send the reply back to ReplyHandler encapsulated by the
         // Messenger.
         Message request = Message.obtain();
-        request.replyTo = new Messenger(new ReplyHandler());
+        request.replyTo = mReplyMessenger;
         
         try {
             if (mReqMessengerRef != null) {
